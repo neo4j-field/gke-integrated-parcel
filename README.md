@@ -1,2 +1,2 @@
-# gke-integrated-parcel
+# gke-interactive-parcel
 GKE Example
