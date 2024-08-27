@@ -1,3 +1,8 @@
+image:
+  imagePullPolicy: "Always"
+  #customImage: "766746056086.dkr.ecr.us-east-2.amazonaws.com/drose-repo:neo4j-aeb281-5.9.0-enterprise-arm"
+  customImage: "davidlrosenblum/neo4jprdtgds:5.23.0-enterprise"
+
 neo4j:
   name: "standalone"
   resources:
@@ -17,9 +22,6 @@ services:
     # Do not create the LB; Create LB in separate manifest
     enabled: false
 
-env:
-  NEO4J_PLUGINS: '["apoc", "graph-data-science", "bloom", "genai"]'
-
 config:
   server.backup.enabled: "true"
   server.config.strict_validation.enabled: "false"
@@ -33,7 +35,6 @@ config:
   server.memory.heap.initial_size: "2G"
   server.memory.heap.max_size: "2G"
   server.memory.pagecache.size: "1500M"
-  server.directories.transaction.logs.root: /transactions
   #below for testing use only - TX log retention must match backup strategy and/or time for store copy
   db.tx_log.rotation.retention_policy: "1 hours"
 
@@ -65,13 +66,5 @@ volumes:
       storageClassName: "neo4j-ssd"
       requests:
         storage: 100Gi
-  transactions:
-      mode: "dynamic"
-      dynamic:
-        storageClassName: "neo4j-ssd"
-        accessModes:
-          - ReadWriteOnce
-        requests:
-          storage: 50Gi
   # optional - create mount for import 
   

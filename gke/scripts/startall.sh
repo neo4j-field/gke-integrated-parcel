@@ -1,6 +1,4 @@
-GKE_CLUSTER_NAME=jhair-gke-cluster
-GKE_CLUSTER_NODE_COUNT=1
-GKE_INSTANCE_TYPE=e2-standard-2
+GKE_CLUSTER_NAME=gke-interactive-parcel
 
 # Configure via environment variables or set defaults in gcloud config (below)
 #export CLOUDSDK_CORE_PROJECT="my-neo4j-project"
@@ -13,17 +11,8 @@ GKE_INSTANCE_TYPE=e2-standard-2
 echo "GKE default settings"
 gcloud config list
 
-#
-# Creating K8s namespace
-#
-echo "Creating GKE cluster - $GKE_CLUSTER_NAME..."
-# The number of nodes to be created in each of the cluster’s zones. You can set
-# this to 1 to create a single node cluster, but it needs at least 3 nodes to
-# build a Kubernetes cluster.
-gcloud container clusters create $GKE_CLUSTER_NAME --num-nodes=$GKE_CLUSTER_NODE_COUNT --machine-type "$GKE_INSTANCE_TYPE"
-
 echo "Configuring kubectl to use the cluster..."
-gcloud container clusters get-credentials $GKE_CLUSTER_NAME
+gcloud container clusters get-credentials gke-interactive-parcel --zone us-central1-c --project fieldeng-se-us-east
 
 #
 # Creating K8s namespace
@@ -53,6 +42,3 @@ helm upgrade -i standalone  neo4j/neo4j -f standalone.yaml
 
 echo "Deploying LB..."
 kubectl apply -f standalone-lb.yaml
-
-echo "Run the kubectl rollout command provided in the output of helm install to watch the Neo4j’s rollout until it is complete."
-echo "kubectl --namespace "neo4j" rollout status --watch --timeout=600s statefulset/standalone"
