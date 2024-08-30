@@ -30,6 +30,7 @@ kubectl config set-context --current --namespace=neo4j
 # Create config map for license files
 #
 ./create-licenses-configmap.sh
+./create-licenses-secret.sh
 
 #
 # Create storage classes
@@ -37,8 +38,14 @@ kubectl config set-context --current --namespace=neo4j
 ./createStorageClass.sh
 
 echo "Deploying Neo4j to the GKE cluster..."
+
 #helm install standalone  neo4j/neo4j --namespace neo4j -f standalone.yaml 
-helm upgrade -i standalone  neo4j/neo4j -f standalone.yaml 
+
+# licenses via configMap
+#helm upgrade -i standalone neo4j/neo4j -f standalone.yaml 
+
+# licenses via secrets
+helm upgrade -i standalone neo4j/neo4j -f sc-standalone.yaml 
 
 echo "Deploying LB..."
 kubectl apply -f standalone-lb.yaml
